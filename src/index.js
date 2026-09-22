@@ -34,4 +34,19 @@ client.on("interactionCreate",async i=>{
  if(i.commandName==="security-status")return i.reply("🛡️ 稼働中\n大量メッセージ: "+CFG.max+"件/"+CFG.window/1000+"秒\n連投: "+CFG.dupMax+"回/"+CFG.dupWindow/1000+"秒\nタイムアウト: 10分");
  if(i.commandName==="security-reset"){messages.clear();duplicates.clear();punished.clear();return i.reply("🧹 検知履歴をリセットしました。");}
 });
-client.login(TOKEN).catch(e=>{console.error("Discord login failed:",e.message);process.exit(1);});
+client.on("error", error => {
+  console.error("Discord client error:", error);
+});
+
+client.on("shardError", error => {
+  console.error("Discord shard error:", error);
+});
+
+console.log("Discord login starting...");
+
+client.login(TOKEN)
+  .then(() => console.log("Discord login request sent."))
+  .catch(error => {
+    console.error("Discord login failed:", error);
+    process.exit(1);
+  });
